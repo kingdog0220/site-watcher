@@ -14,5 +14,5 @@ jobs:
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d "{\"content\":\"<@${DISCORD_USER_ID}> 🧪 テスト通知です（GitHub Actions 手動実行）\"}" \
+            -d "{\"content\":\"@${DISCORD_USER_ID} 🧪 テスト通知です（GitHub Actions 手動実行）\"}" \
             "$DISCORD_WEBHOOK_URL"
