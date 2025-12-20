@@ -1,0 +1,17 @@
+name: Test Discord Notification
+
+on:
+  workflow_dispatch:   # 手動実行専用
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send test notification to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"content":"🧪 テスト通知です（GitHub Actions 手動実行）"}' \
+            "$DISCORD_WEBHOOK_URL"
