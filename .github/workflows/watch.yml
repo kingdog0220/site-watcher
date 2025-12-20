@@ -2,7 +2,7 @@ name: Vivaldi Blog Update Watcher
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # 30分ごと
+    - cron: "0 23 * * *"   # 毎日 朝8時（JST）
   workflow_dispatch:
 
 jobs:
