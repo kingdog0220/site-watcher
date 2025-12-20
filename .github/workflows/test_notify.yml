@@ -10,8 +10,9 @@ jobs:
       - name: Send test notification to Discord
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"content":"@everyone 🧪 テスト通知です（GitHub Actions 手動実行）"}' \
+            -d '{"content":"<@${DISCORD_USER_ID}> 🧪 テスト通知です（GitHub Actions 手動実行）"}' \
             "$DISCORD_WEBHOOK_URL"
