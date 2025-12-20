@@ -32,3 +32,13 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{"content":"🔔 Vivaldiブログ（最新記事）が更新されました\nhttps://vivaldi.com/ja/blog/latest/"}' \
             "$DISCORD_WEBHOOK_URL"
+
+      # ===== テスト用（確認後に必ず削除） =====
+      - name: Test Discord notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"content":"🧪 テスト通知です（GitHub Actions）"}' \
+            "$DISCORD_WEBHOOK_URL"
