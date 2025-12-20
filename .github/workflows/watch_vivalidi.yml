@@ -27,8 +27,9 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"content":"@everyone 🔔 Vivaldiブログ（最新記事）が更新されました\nhttps://vivaldi.com/ja/blog/latest/"}' \
+            -d "{\"content\":\"<@${DISCORD_USER_ID}> 🔔 Vivaldiブログ（最新記事）が更新されました\nhttps://vivaldi.com/ja/blog/latest/"}' \
             "$DISCORD_WEBHOOK_URL"
