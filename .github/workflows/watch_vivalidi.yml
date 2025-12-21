@@ -9,6 +9,12 @@ jobs:
   watch:
     runs-on: ubuntu-latest
     steps:
+      - name: Download previous HTML (if exists)
+        uses: actions/download-artifact@v4
+        with:
+          name: prev-html
+          path: ./prev
+
       - name: Fetch latest blog page
         run: |
           curl -s https://vivaldi.com/ja/blog/latest/ > current.html
@@ -16,12 +22,13 @@ jobs:
       - name: Compare with previous
         id: diff
         run: |
-          if [ -f prev.html ]; then
-            diff prev.html current.html || echo "changed=true" >> $GITHUB_OUTPUT
+          changed=false
+          if [ -f prev/prev.html ]; then
+            diff prev/prev.html current.html || changed=true
           else
-            echo "changed=true" >> $GITHUB_OUTPUT
+            changed=true
           fi
-          mv current.html prev.html
+          echo "changed=$changed" >> $GITHUB_OUTPUT
 
       - name: Notify Discord
         if: steps.diff.outputs.changed == 'true'
@@ -31,5 +38,12 @@ jobs:
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d "{\"content\":\"<@${DISCORD_USER_ID}> 🔔 Vivaldiブログ（最新記事）が更新されました\nhttps://vivaldi.com/ja/blog/latest/"}' \
+            -d "{\"content\":\"<@${DISCORD_USER_ID}> 🔔 Vivaldiブログ（最新記事）が更新されました\nhttps://vivaldi.com/ja/blog/latest/\"}" \
             "$DISCORD_WEBHOOK_URL"
+
+      - name: Save current HTML as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: prev-html
+          path: current.html
+          
