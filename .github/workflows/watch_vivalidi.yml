@@ -23,11 +23,14 @@ jobs:
         id: diff
         run: |
           changed=false
+          mkdir -p prev
           if [ -f prev/prev.html ]; then
             diff prev/prev.html current.html || changed=true
           else
             changed=true
           fi
+          # 次回比較用に current.html を prev/prev.html にコピー
+          cp current.html prev/prev.html
           echo "changed=$changed" >> $GITHUB_OUTPUT
 
       - name: Notify Discord
@@ -45,5 +48,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: prev-html
-          path: current.html
+          path: prev/prev.html
           
