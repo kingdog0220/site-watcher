@@ -13,25 +13,32 @@ jobs:
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
-          name: prev-html
+          name: prev-urls
           path: ./prev
 
       - name: Fetch latest blog page
         run: |
-          curl -s https://vivaldi.com/ja/blog/latest/ > current.html
+          curl -s https://vivaldi.com/ja/blog/latest/ > full.html
+      
+      - name: Extract blogcard URLs
+        run: |
+          sed -n '/<div class="column w50 w100-mobile">/,/<\/div><\/div><\/div>/p' full.html \
+            | grep -oE 'https://vivaldi\.com/ja/blog/[^"]+' \
+            | sort -u \
+            > current_urls.txt
 
       - name: Compare with previous
         id: diff
         run: |
           changed=false
           mkdir -p prev
-          if [ -f prev/prev.html ]; then
-            diff prev/prev.html current.html || changed=true
+          if [ -f prev/urls.txt ]; then
+            diff prev/urls.txt current_urls.txt > /dev/null || changed=true
           else
             changed=true
           fi
-          # 次回比較用に current.html を prev/prev.html にコピー
-          cp current.html prev/prev.html
+          # 次回比較用に current_urls.txt を prev/urls.txt にコピー
+          cp current_urls.txt prev/urls.txt
           echo "changed=$changed" >> $GITHUB_OUTPUT
 
       - name: Notify Discord
@@ -48,6 +55,6 @@ jobs:
       - name: Save current HTML as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: prev-html
-          path: prev/prev.html
+          name: prev-urls
+          path: prev/urls.txt
           
