@@ -9,12 +9,11 @@ jobs:
   watch:
     runs-on: ubuntu-latest
     steps:
-      - name: Download previous HTML (if exists)
-        uses: actions/download-artifact@v4
-        continue-on-error: true
+      - name: Restore previous schedule cache
+        uses: actions/cache@v4
         with:
-          name: prev-urls
-          path: ./prev
+          path: prev
+          key: schedule-prev
 
       - name: Fetch latest blog page
         run: |
@@ -52,9 +51,9 @@ jobs:
             -d "{\"content\":\"<@${DISCORD_USER_ID}> 🔔 Vivaldiブログ（最新記事）が更新されました\nhttps://vivaldi.com/ja/blog/latest/\"}" \
             "$DISCORD_WEBHOOK_URL"
 
-      - name: Save current HTML as artifact
-        uses: actions/upload-artifact@v4
+      - name: Save schedule cache
+        uses: actions/cache@v4
         with:
-          name: prev-urls
-          path: prev/urls.txt
+          path: prev
+          key: schedule-prev
           
