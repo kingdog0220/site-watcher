@@ -48,7 +48,8 @@ jobs:
         run: |
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d "{\"content\":\"<@${DISCORD_USER_ID}> 🔔 Vivaldiブログ（最新記事）が更新されました\nhttps://vivaldi.com/ja/blog/latest/\"}" \
+            -d "{\"content\":\"<@${DISCORD_USER_ID}> 🔔 Vivaldiブログ（最新記事）が更新されました\nhttps://vivaldi.com/ja/blog/latest/\",
+            \"allowed_mentions\": {\"users\": [\"${DISCORD_USER_ID}\"]}}" \
             "$DISCORD_WEBHOOK_URL"
 
       - name: Save schedule cache
