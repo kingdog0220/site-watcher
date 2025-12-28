@@ -12,7 +12,6 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
         run: |
-          curl -X POST \
+          curl -X POST "$DISCORD_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            -d "{\"content\":\"<@${DISCORD_USER_ID}> 🧪 テスト通知です（GitHub Actions 手動実行）\"}" \
-            "$DISCORD_WEBHOOK_URL"
+            -d "{\"content\": \"<@${DISCORD_USER_ID}> テスト通知です\", \"allowed_mentions\": {\"users\": [\"${DISCORD_USER_ID}\"]}}"
