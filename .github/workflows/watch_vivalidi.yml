@@ -51,6 +51,7 @@ jobs:
             -d "{\"content\": \"<@${DISCORD_USER_ID}> 🔔Vivaldiブログ（最新記事）が更新されました\nhttps://vivaldi.com/ja/blog/latest/\", \"allowed_mentions\": {\"users\": [\"${DISCORD_USER_ID}\"]}}"
 
       - name: Save schedule cache
+        if: always()
         uses: actions/cache@v4
         with:
           path: prev
