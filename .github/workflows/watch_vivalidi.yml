@@ -15,30 +15,11 @@ jobs:
           path: prev
           key: schedule-prev
 
-      - name: Fetch latest blog page
-        run: |
-          curl -s https://vivaldi.com/ja/blog/latest/ > full.html
-      
-      - name: Extract blogcard URLs
-        run: |
-          sed -n '/<div class="column w50 w100-mobile">/,/<\/div><\/div><\/div>/p' full.html \
-            | grep -oE 'https://vivaldi\.com/ja/blog/[^"]+' \
-            | sort -u \
-            > current_urls.txt
-
-      - name: Compare with previous
+      - name: Run watcher script
         id: diff
         run: |
-          changed=false
-          mkdir -p prev
-          if [ -f prev/urls.txt ]; then
-            diff prev/urls.txt current_urls.txt > /dev/null || changed=true
-          else
-            changed=true
-          fi
-          # 次回比較用に current_urls.txt を prev/urls.txt にコピー
-          cp current_urls.txt prev/urls.txt
-          echo "changed=$changed" >> $GITHUB_OUTPUT
+          chmod +x .github/scripts/watch_vivaldi.sh
+          .github/scripts/watch_vivaldi.sh
 
       - name: Notify Discord
         if: steps.diff.outputs.changed == 'true'
