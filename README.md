@@ -15,12 +15,14 @@ GitHub Actions を使用してウェブサイトの定期的な監視と更新�
 ## ファイル構成
 
 ```
-.github/
-├── workflows/
-│   ├── watch_vivalidi.yml       # Vivaldi ブログ監視ワークフロー
-│   └── test_notify.yml          # 通知テストワークフロー
-└── scripts/
-    └── watch_vivaldi.sh         # Vivaldi ブログ監視スクリプト
+.
+├── .github/
+│   └── workflows/
+│       ├── watch_vivalidi.yml       # Vivaldi ブログ監視ワークフロー
+│       └── test_notify.yml          # 通知テストワークフロー
+├── scripts/
+│   └── watch_vivaldi.sh             # Vivaldi ブログ監視スクリプト
+└── README.md
 ```
 
 ## ワークフロー説明
@@ -34,7 +36,7 @@ Vivaldi ブログの最新記事更新を監視するワークフロー
 
 **ステップ詳細**
 1. **キャッシュ復元** - 前回実行時の状態を復元
-2. **監視スクリプト実行** - `watch_vivaldi.sh` を実行して差分検知
+2. **監視スクリプト実行** - `scripts/watch_vivaldi.sh` を実行して差分検知
 3. **通知送信** - 変更検知時に Discord へ通知
 4. **キャッシュ保存** - 今回の状態を保存
 
@@ -80,13 +82,13 @@ GitHub リポジトリの **Settings → Secrets and variables → Actions** で
 
 ### 新しいサイト監視を追加する場合
 
-1. **シェルスクリプト作成** - `.github/scripts/watch_<site-name>.sh` を作成
+1. **シェルスクリプト作成** - `scripts/watch_<site-name>.sh` を作成
    - ターゲットサイトに合わせて HTML 解析ロジックを実装
    - 必ず最後に `echo "changed=true/false" >> "$GITHUB_OUTPUT"` を出力
 
 2. **ワークフロー作成** - `.github/workflows/watch_<site-name>.yml` を作成
    - スケジュール（cron）を設定
-   - スクリプト実行ステップで作成したシェルスクリプトを呼び出し
+   - スクリプト実行ステップで `scripts/watch_<site-name>.sh` を呼び出し
    - 通知先（Slack、Discord など）を追加
 
 ### 既存監視の調整
@@ -102,7 +104,7 @@ GitHub リポジトリの **Settings → Secrets and variables → Actions** で
 # watch_vivalidi.sh を実行前に DISCORD_WEBHOOK_URL、DISCORD_USER_ID を設定
 DISCORD_WEBHOOK_URL="<your-webhook-url>" \
 DISCORD_USER_ID="<your-user-id>" \
-.github/scripts/watch_vivaldi.sh
+scripts/watch_vivaldi.sh
 ```
 
 ### ワークフロー手動実行
