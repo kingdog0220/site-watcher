@@ -7,6 +7,13 @@ STATE_FILE="${STATE_DIR}/urls.txt"
 
 mkdir -p "$STATE_DIR"
 
+echo "===== DEBUG: working directory ====="
+pwd
+ls -la
+
+echo "===== DEBUG: prev directory ====="
+ls -la "$STATE_DIR" || true
+
 # 最新ページ取得
 curl -s "$BLOG_URL" > full.html
 
@@ -16,14 +23,22 @@ sed -n '/<div class="column w50 w100-mobile">/,/<\/div><\/div><\/div>/p' full.ht
   | sort -u \
   > current_urls.txt
 
+echo "===== DEBUG: current_urls.txt ====="
+nl -ba current_urls.txt || echo "(current_urls.txt is empty)"
+
 changed=false
 
 if [ -f "$STATE_FILE" ]; then
+  echo "===== DEBUG: prev/urls.txt ====="
+  nl -ba "$STATE_FILE" || true
+  
   if ! diff "$STATE_FILE" current_urls.txt > /dev/null; then
+    echo "DEBUG: diff detected"
     changed=true
   fi
 else
   # 初回実行
+  echo "DEBUG: prev/urls.txt does NOT exist (first run)"
   changed=true
 fi
 
