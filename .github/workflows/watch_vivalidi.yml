@@ -21,7 +21,7 @@ jobs:
         id: diff
         run: |
           chmod +x scripts/watch_vivaldi.sh
-          scripts/watch_vivaldi.sh
+          ./scripts/watch_vivaldi.sh
 
       - name: Notify Discord
         if: steps.diff.outputs.changed == 'true'
