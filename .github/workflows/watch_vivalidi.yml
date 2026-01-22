@@ -10,12 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set date keys
+        run: |
+          echo "TODAY=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "YESTERDAY=$(date -u -d '1 day ago' +'%Y-%m-%d')" >> $GITHUB_ENV
       
       - name: Restore previous schedule cache
         uses: actions/cache@v4
         with:
           path: prev
-          key: schedule-prev
+          key: schedule-prev-${{ env.YESTERDAY }}
+          restore-keys: |
+            schedule-prev-
+          fail-on-cache-miss: false
 
       - name: Run watcher script
         id: diff
@@ -38,5 +46,5 @@ jobs:
         uses: actions/cache@v4
         with:
           path: prev
-          key: schedule-prev
+          key: schedule-prev-${{ env.TODAY }}
           
