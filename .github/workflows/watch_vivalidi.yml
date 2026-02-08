@@ -15,6 +15,7 @@ jobs:
         run: |
           echo "TODAY=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "YESTERDAY=$(date -u -d '1 day ago' +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "CUTOFF_DATE=$(date -u -d '10 days ago' +'%Y-%m-%d')" >> $GITHUB_ENV
       
       - name: Restore previous schedule cache
         uses: actions/cache@v4
@@ -47,4 +48,18 @@ jobs:
         with:
           path: prev
           key: schedule-prev-${{ env.TODAY }}
+
+      - name: Delete old caches
+        if: always()
+        run: |
+          gh cache list --limit 100 | grep 'schedule-prev-' | while read -r line; do
+            CACHE_ID=$(echo "$line" | awk '{print $1}')
+            CACHE_KEY=$(echo "$line" | awk '{print $2}')
+            CACHE_DATE=$(echo "$CACHE_KEY" | sed 's/schedule-prev-//')
+            if [[ "$CACHE_DATE" < "${{ env.CUTOFF_DATE }}" ]]; then
+              gh cache delete "$CACHE_ID" --confirm
+            fi
+          done
+        env:
+          GH_TOKEN: ${{ github.token }}
           
