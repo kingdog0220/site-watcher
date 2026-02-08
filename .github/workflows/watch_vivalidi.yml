@@ -57,7 +57,7 @@ jobs:
             CACHE_KEY=$(echo "$line" | awk '{print $2}')
             CACHE_DATE=$(echo "$CACHE_KEY" | sed 's/schedule-prev-//')
             if [[ "$CACHE_DATE" < "${{ env.CUTOFF_DATE }}" ]]; then
-              gh cache delete "$CACHE_ID" --confirm
+              gh cache delete "$CACHE_ID"
             fi
           done
         env:
