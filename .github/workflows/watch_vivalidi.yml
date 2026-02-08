@@ -5,6 +5,9 @@ on:
     - cron: "0 23 * * *"   # 毎日 朝8時（JST）
   workflow_dispatch:
 
+permissions:
+  actions: write
+
 jobs:
   watch:
     runs-on: ubuntu-latest
